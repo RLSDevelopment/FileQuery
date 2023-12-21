@@ -50,6 +50,10 @@ function querySplitPreserve(queryString){
         iteration++
     }
 
+    if (wordStack.length > 0){
+        stringStack.push(wordStack.join(''))
+    }
+
     var final = []
 
     for (var i = 0; i < stringStack.length; i++){
@@ -61,19 +65,31 @@ function querySplitPreserve(queryString){
     return final
 }
 
-function query(queryString) {
+function isQueryVariable(word){
+    if (word.includes(`'`)) {
+        return true
+    }
+    return false
+}
+
+function processQuery(queryString) {
     // Separate the string into words, by a space
     var queryWords = querySplitPreserve(queryString)
-    console.log(queryWords)
     // Invert the string to create a stack structure
     queryWords.reverse()
 
     var queryAction = null // 'FIND', 'GET', 'UPDATE', 'DELETE'
     var queryType = null // 'FOLDER', 'FILE'
-    var propertyField = null // 'id', '(propertyName)'
-    var propertyValue = null // '86', 'hello world'
-    var fileName = null // 'meta', 'body'
-    var fileFormat = null // 'json', 'txt'
+    var jsonPropertyField = null // 'id', '(propertyName)'
+    var jsonProperyValue = null // '86', 'hello world'
+    
+    var name = null
+    var format = null
+    var count = null
+    var size = null
+
+    var sizeless = false
+    var sizegreat = false
     
     // Used in while loop below
     var word
@@ -123,32 +139,56 @@ function query(queryString) {
             case 'WITH':
                 queryWords.pop()
                 setWord() // Pops the instruction word off the stack, current word should be a property field name
-                if (word.includes(`'`)){
-                    propertyField = word
+                if (isQueryVariable(word)){
+                    jsonPropertyField = word
                     queryWords.pop()
                 }
                 setWord()
-                if (word.includes(`'`)){
-                    propertyValue = word
-                    queryWords.pop()
-                }
-                break;
-            case 'IN':
-                queryWords.pop()
-                setWord() // Pops the instruction word off the stack, current word should be filename
-                if (word.includes(`'`)){
-                    fileName = word
+                if (isQueryVariable(word)){
+                    jsonProperyValue = word
                     queryWords.pop()
                 }
                 break;
             case 'FORMAT':
                 queryWords.pop()
                 setWord()
-                if (word.includes(`'`)){
-                    fileFormat = word
+                if (isQueryVariable(word)){
+                    format = word
                     queryWords.pop()
                 }
                 break;
+            case 'NAME':
+                queryWords.pop()
+                setWord()
+                if (isQueryVariable(word)) {
+                    name = word
+                    queryWords.pop()
+                }
+                break
+            case 'COUNT':
+                queryWords.pop()
+                setWord()
+                if (isQueryVariable(word)){
+                    count = word
+                    queryWords.pop()
+                }
+                break
+            case 'SIZE':
+                queryWords.pop()
+                setWord()
+                if (isQueryVariable(word)){
+                    size = word
+                    queryWords.pop()
+                }
+            case 'SIZELESS':
+                queryWords.pop()
+                sizeless = true
+                break
+            case 'SIZEGREAT':
+                console.log('sizegreat present')
+                queryWords.pop()
+                sizegreat = true
+                break
             default:
                 queryWords.pop()
                 break
@@ -157,9 +197,11 @@ function query(queryString) {
         iteration++
     }
 
-    console.log(queryAction, queryType, propertyField, propertyValue, fileName, fileFormat)
+    console.log({queryAction, queryType, jsonPropertyField, jsonProperyValue, name, format, count, size, sizeless, sizegreat})
 }
 
-var queryString = `FIND FOLDER BY 'name' 'Ryan Overdeer' IN 'meta'`
+var queryString = `FIND FOLDER SIZE '10mb' SIZELESS`
 
-console.log(query(queryString))
+processQuery(queryString)
+
+console.log(`Execution time ${end-start} ms`)
