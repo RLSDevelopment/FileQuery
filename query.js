@@ -1,8 +1,13 @@
 // Author: Ryan Overdeer
 
+// Variables 
+const dir = __dirname
+
 // Includes
 const fs = require('fs')
 const path = require('path')
+    // Actions
+    const find = require()
 
 function querySplitPreserve(queryString){
     var queryStringCharacters = queryString.split('')
