@@ -6,17 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/RLSDevelopment/FileQuery.git"
-  },
   "author": "Ryan Overdeer",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/RLSDevelopment/FileQuery/issues"
   },
   "homepage": "https://github.com/RLSDevelopment/FileQuery#readme",
-  "dependencies": {
-    "fs": "0.0.1-security"
-  }
+  "dependencies": {}
 }
