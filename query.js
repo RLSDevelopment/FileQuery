@@ -7,7 +7,7 @@ const dir = __dirname
 const fs = require('fs')
 const path = require('path')
     // Actions
-    const find = require()
+    const find = require(path.join(dir, 'find', 'find.js'))
 
 function querySplitPreserve(queryString){
     var queryStringCharacters = queryString.split('')
